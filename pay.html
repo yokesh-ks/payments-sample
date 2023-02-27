@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://js.stripe.com/v3/"></script>
+    <title>Programmes Checkout</title>
+</head>
+<body>
+
+    <script>
+
+const urlParams = new URLSearchParams(window.location.search);
+
+
+            const configUrl = "https://payments-dev.edvanza.com/api/v1/payment/stripe/config"
+            const url = "https://payments-dev.edvanza.com/api/v1/payment/intent";
+
+          const requestPayload = {
+	entityType: urlParams.get("entityType"),
+	programme: urlParams.get("programme"),
+	course: urlParams.get("course"),
+	assessment:urlParams.get("assessment"),
+	pg: urlParams.get("pg"),
+	lookupKey: urlParams.get("lookupKey"),
+	currency: urlParams.get("currency"),
+	country:urlParams.get("country"),
+	amount: urlParams.get("amount"),
+	type: urlParams.get("type"),
+	paymentsUrl: urlParams.get("paymentsUrl"),
+	deepLinkingUrl:  urlParams.get("deepLinkingUrl")
+}
+const token = "eyJraWQiOiJQenVDb2piYlp3UndHY2pOYXdwMFwvRTNyTVMwb2I4a2R0ZXFQckFXdHAyOD0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIwN2M2ZDc2Zi02Nzc3LTQ3ZWItOWNhNi03NDI2YjdkODc4MDIiLCJjb2duaXRvOmdyb3VwcyI6WyJVU0VSUyJdLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX3A0bmtOdzdmcyIsImNsaWVudF9pZCI6IjhiZ3ZnMmprbWNtNWZubzJqaDQ0azZqZjkiLCJvcmlnaW5fanRpIjoiNDcyMWQ4OWYtOTU5OC00MzQ2LWJmNGItMTNjZTAwZWQ0YTY2IiwiZXZlbnRfaWQiOiIzMWM3OTQ4OS03ZGVhLTQ4NWEtOGJiYy02ODJlMzY1NDE2NDAiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJzY29wZSI6ImF3cy5jb2duaXRvLnNpZ25pbi51c2VyLmFkbWluIiwiYXV0aF90aW1lIjoxNjc3MDU2NzUwLCJleHAiOjE2NzcxNDMxNTAsImlhdCI6MTY3NzA1Njc1MCwianRpIjoiYjY5NDk0NzYtMTAxMC00ZDVmLTk0NTktMTQ1OTkzNzk5MGRhIiwidXNlcm5hbWUiOiJlZGVuX3VzZXJfNGViNGZlZjMtY2E4NS00NDM5LTk4OWUtMWIyMmU0MTg1NWJhIn0.Uqgp7urRFIdo71CRFjOxvHxfK1JNU_g3py-PCw44OCWHzaftmYR_TkDxrCr5K7gqfYUS3Y713V_KtGHXpjn6xBnI8WZ8CVgCsLLIc2dG3zKK9wtfBAu3_584zkCUjtONDElPFTAJFADsq7dKNPDSTB3R82Gm6qfiYxsWaabjM0JxEdpW0ls_YHHV8_ywiozp-NBxfL6gPu-4GRLYLeK5h8nMEXehUi7utbzw0kxp0bjHLzaYPiQZZiRZleg1VqRA2J1IJn4efVD2EmBhMlUIc-6RYhzZp0RWywywMp8a-KMhnz615ht1s3wfYhdb4p_TkPjy4p1nmXd9RvSPDEvzSw"
+            fetch(configUrl).then((result) => { return result.json(); })
+    .then((data) => {
+      // Initialize Stripe.js
+      const stripe = Stripe(data.publicKey)
+
+      fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "authorization": `${token}`
+            },
+            body: JSON.stringify(requestPayload)
+          })
+          .then((result) => { return result.json(); })
+          .then(response => {
+            console.log(response);
+            // Redirect to Stripe Checkout
+            return stripe.redirectToCheckout({ sessionId: response.data.sessionId })
+          })
+          .then(json => console.log(json))
+          .catch(error => console.error(error));
+      ;})
+
+
+      </script>
+    </body>
+  </html>
+</body>
+</html>
